@@ -26,7 +26,8 @@ async function dropTables() {
   try {
     console.log("Starting to drop tables...");
     await client.query(`
-  DROP TABLE IF EXISTS users;
+    DROP TABLE IF EXISTS users;
+    DROP TABLE IF EXISTS users;
   `);
     console.log("Finished dropping tables!");
   } catch (error) {
@@ -40,13 +41,20 @@ async function createTables() {
     console.log("Starting to build tables...");
     await client.query(`
       CREATE TABLE users (
-          id SERIAL PRIMARY KEY,
-        username varchar(255) UNIQUE NOT NULL,
-        password varchar(255) NOT NULL,
-        name VARCHAR(255) NOT NULL,
-        location VARCHAR(255) NOT NULL,
-        active BOOLEAN DEFAULT true
-        );  
+            id SERIAL PRIMARY KEY,
+            username varchar(255) UNIQUE NOT NULL,
+            password varchar(255) NOT NULL,
+            name VARCHAR(255) NOT NULL,
+            location VARCHAR(255) NOT NULL,
+            active BOOLEAN DEFAULT true
+        ); 
+        CREATE TABLE posts (
+            id SERIAL PRIMARY KEY,
+            "authorId" INTEGER REFERENCES users(id) NOT NULL,
+            title VARCHAR(255) NOT NULL,
+            content TEXT NOT NULL,
+            active BOOLEAN DEFAULT true
+        ); 
         `);
     console.log("Finished building tables!");
   } catch (error) {
