@@ -3,15 +3,7 @@ const { Client } = require("pg"); // imports the pg module
 // supply the db name and location of the database
 const client = new Client("postgres://localhost:5432/juicebox-dev");
 
-async function getAllUsers() {
-  const { rows } = await client.query(
-    `SELECT id, username, name, location
-      FROM users;
-    `
-  );
-
-  return rows;
-}
+// USER METHODS
 
 async function createUser({ username, password, name, location }) {
   try {
@@ -63,19 +55,41 @@ async function updateUser(id, fields = {}) {
   }
 }
 
-async function getAllPosts() {
+async function getAllUsers() {
   try {
-    const { rows } = await client.query(`
-        SELECT *
-        FROM posts;
-        `);
+    const { rows } = await client.query(
+      `SELECT id, username, name, location
+      FROM users;
+    `
+    );
 
     return rows;
-
   } catch (error) {
     throw error;
   }
 }
+
+async function getUserById(userId) {
+  try {
+    const { rows: [ user ] } = await client.query(`
+      SELECT id, username, name, location, active
+      FROM users
+      WHERE id=${ userId }
+    `);
+
+    if (!user) {
+      return null
+    }
+
+    user.posts = await getPostsByUser(userId);
+
+    return user;
+  } catch (error) {
+    throw error;
+  }
+}
+
+// POST METHODS
 
 async function createPost({ authorId, title, content }) {
   try {
@@ -126,27 +140,41 @@ async function updatePost(id, fields = {}) {
   }
 }
 
-async function getPostsByUser(userId) {
-    try {
-      const { rows } = await client.query(`
-        SELECT * 
-        FROM posts
-        WHERE "authorId"=${ userId };
-      `);
-  
-      return rows;
-    } catch (error) {
-      throw error;
-    }
+async function getAllPosts() {
+  try {
+    const { rows } = await client.query(`
+        SELECT *
+        FROM posts;
+        `);
+
+    return rows;
+  } catch (error) {
+    throw error;
   }
+}
+
+async function getPostsByUser(userId) {
+  try {
+    const { rows } = await client.query(`
+      SELECT * 
+      FROM posts
+      WHERE "authorId"=${userId};
+    `);
+
+    return rows;
+  } catch (error) {
+    throw error;
+  }
+}
 
 module.exports = {
   client,
-  getAllUsers,
   createUser,
   updateUser,
-  getAllPosts,
+  getAllUsers,
+  getUserById,
   createPost,
   updatePost,
+  getAllPosts,
   getPostsByUser
 };
