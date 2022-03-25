@@ -55,8 +55,9 @@ async function createTables() {
           name VARCHAR(255) UNIQUE NOT NULL
         );
         CREATE TABLE post_tags (
-          "postId" INTEGER REFERENCES posts(id) UNIQUE NOT NULL,
-          "tagId" INTEGER REFERENCES tags(id) UNIQUE NOT NULL
+          "postId" INTEGER REFERENCES posts(id) NOT NULL,
+          "tagId" INTEGER REFERENCES tags(id) NOT NULL,
+          UNIQUE ("postId", "tagId")
         );
         `);
 

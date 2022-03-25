@@ -192,7 +192,7 @@ async function createTags(tagList) {
     // insert the tags, doing nothing on conflict
     // returning nothing, we'll query after
     
-    console.log('rows: ', rows)
+    console.log('tagList: ', tagList)
 
     const { rows } = await client.query(`
     SELECT * FROM tags
@@ -208,6 +208,7 @@ async function createTags(tagList) {
     throw error;
   }
 }
+
 
 async function createPostTag(postId, tagId) {
   try {
