@@ -4,9 +4,10 @@ const server = express();
 const apiRouter = require('./api');
 const morgan = require('morgan');
 server.use(morgan('dev'));
+require('dotenv').config();
 
-server.use('/api', apiRouter);
 server.use(express.json())
+server.use('/api', apiRouter);
 
 server.use((req, res, next) => {
     console.log("<____Body Logger START____>");
@@ -17,6 +18,7 @@ server.use((req, res, next) => {
   });
 
 const { client } = require('./db');
+
 client.connect();
 
 server.listen(PORT, () => {
