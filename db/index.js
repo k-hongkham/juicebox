@@ -227,7 +227,6 @@ async function createTags(tagList) {
   const selectValues = tagList.map((_, index) => `$${index + 1}`).join(", ");
   // then we can use (${ selectValues }) in our string template
 
-  console.log("tagList: ", tagList);
   try {
     await client.query(
       `
@@ -237,10 +236,6 @@ async function createTags(tagList) {
     `,
       tagList
     );
-    // insert the tags, doing nothing on conflict
-    // returning nothing, we'll query after
-
-    console.log("tagList: ", tagList);
 
     const { rows } = await client.query(
       `
@@ -252,9 +247,6 @@ async function createTags(tagList) {
     );
 
     return rows;
-
-    // select all tags where the name is in our taglist
-    // return the rows from the query
   } catch (error) {
     throw error;
   }
@@ -357,11 +349,16 @@ async function getPostsByTagName(tagName) {
 
 async function getUserByUsername(username) {
   try {
-    const { rows: [user] } = await client.query(`
+    const {
+      rows: [user],
+    } = await client.query(
+      `
       SELECT *
       FROM users
       WHERE username=$1;
-    `, [username]);
+    `,
+      [username]
+    );
 
     return user;
   } catch (error) {
@@ -385,5 +382,5 @@ module.exports = {
   getAllTags,
   getPostById,
   getPostsByTagName,
-  getUserByUsername
+  getUserByUsername,
 };
