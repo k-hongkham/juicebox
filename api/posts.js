@@ -1,6 +1,7 @@
 const express = require("express");
+const { user } = require("pg/lib/defaults");
 const postsRouter = express.Router();
-const { getAllPosts } = require("../db");
+const { getAllPosts, createPost } = require("../db");
 const { requireUser } = require("./utils");
 
 postsRouter.use((req, res, next) => {
@@ -29,14 +30,16 @@ postsRouter.post("/", requireUser, async (req, res, next) => {
   }
 
   try {
-    const postData = { authorId, title, content };
+    const postData = {
+      authorId: req.user.id,
+      title,
+      content,
+      tags: tagArr,
+    };
     const post = await createPost(postData);
 
     res.send({ post });
     // otherwise, next an appropriate error object
-
-    //BOOKMARK - PART 3 WRITING POST
-    next(error);
   } catch ({ name, message }) {
     next({ name, message });
   }
