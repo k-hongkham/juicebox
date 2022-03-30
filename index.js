@@ -1,4 +1,7 @@
-import { App } from './components/App'
+import React from 'react'
+import ReactDom from 'react-dom'
+import { BrowserRouter as Router } from 'react-router-dom'
+import { App } from './components'
 
 const { PORT = 3000 } = process.env;
 const express = require("express");
@@ -27,11 +30,18 @@ server.get("/add/:first/to/:second", (req, res, next) => {
   );
 });
 
-server.get("/", (req, res, next) => {
-    res.send(
-      <App />
-    );
-  });
+// server.get("/", (req, res, next) => {
+//     res.send(
+//       <App />
+//     );
+//   });
+
+ReactDom.render(
+    <Router>
+        <App />
+    </Router>,
+    document.getElementById("app")
+)
 
 const { client } = require("./db");
 
