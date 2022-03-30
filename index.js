@@ -1,3 +1,5 @@
+import { App } from './components/App'
+
 const { PORT = 3000 } = process.env;
 const express = require("express");
 const server = express();
@@ -24,6 +26,12 @@ server.get("/add/:first/to/:second", (req, res, next) => {
     }</h1>`
   );
 });
+
+server.get("/", (req, res, next) => {
+    res.send(
+      <App />
+    );
+  });
 
 const { client } = require("./db");
 
